@@ -201,6 +201,16 @@ details.pr[open] summary{border-bottom:1px solid var(--line)}
 .pbody pre{margin:0;background:var(--bg);border-radius:6px;padding:12px;font-family:var(--f-mono);font-size:12.5px;line-height:1.55;white-space:pre-wrap;overflow-x:auto;min-width:0}
 .copy{align-self:flex-start;font:inherit;font-size:13px;font-weight:600;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);border-radius:6px;padding:6px 12px;cursor:pointer}
 .copy.done{background:var(--good);border-color:var(--good)}
+.lesson{margin-top:14px;display:flex;flex-direction:column;gap:10px}
+.lesson p{margin:0;font-size:13px;color:var(--muted);line-height:1.45}
+.lesson-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.chat{font-size:13px;font-weight:600;border:1px solid var(--accent);border-radius:6px;padding:6px 12px;text-decoration:none}
+.blockwrap{display:flex;flex-direction:column;gap:8px}
+.bp{display:flex;flex-wrap:wrap;align-items:flex-start;gap:8px 12px;padding:0 0 4px 12px;min-width:0}
+.bp details{flex:1 1 115px;min-width:0}
+.bp summary,.ptext summary{cursor:pointer;font-size:13px;color:var(--accent);padding:6px 0}
+.bp details[open]{flex-basis:100%}
+.bp pre,.ptext pre{margin:6px 0 0;background:var(--bg);border-radius:6px;padding:12px;font-family:var(--f-mono);font-size:12.5px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere;min-width:0}
 
 /* resources */
 .tbl-box{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
@@ -302,6 +312,14 @@ img{max-width:100%}
           <span class="msg" id="auth-who"></span>
           <button class="ghost" id="btn-logout" type="button">Вийти</button>
         </div>
+      </div>
+      <div class="lesson">
+        <p>Скопіюй промпт, встав у чат проєкту English School і відповідай текстом або голосом через мікрофон. Можна копіювати по блоках або все заняття одним повідомленням.</p>
+        <div class="lesson-row">
+          <button class="copy" id="copy-lesson" type="button">Копіювати все заняття</button>
+          <a class="chat" href="https://claude.ai/projects" target="_blank" rel="noopener">Відкрити Claude</a>
+        </div>
+        <details class="ptext"><summary>Показати текст</summary><pre id="lesson-pre"></pre></details>
       </div>
       <div class="blocks" id="blocks"></div>
       <button class="min-btn" id="min-btn" type="button" aria-pressed="false">Мінімальний день · 5 хв (Anki або 3 речення Claude)</button>
@@ -645,6 +663,38 @@ blocker — Do you have any blockers?</pre></div>
     {n:'Сб',f:'Тижнева перевірка',x:'P8, злиття журналу, новий чат у Claude',c:'var(--s1)',inp:'Тест P8',out:'Письмо 60 слів і монолог (P8)'}
   ];
 
+  const INPUT=(words,extra)=>`Block 2 — Input. Write a ${words}-word text at CEFR A2 about ${extra}. Max 5 words above A2 in bold. Then ask me 5 questions, one at a time. Wait for my answers.`;
+  const NEW_TOPIC='a new IT topic we have not used yet';
+  // Промпти на день. Індекс = JS getDay(); 7 — перша субота, коли перевіряти ще нічого.
+  const LESSONS=[
+    {en:'light day: listening for pleasure, no pressure',
+     inp:`Block 2 — Input. Today is a light day. Suggest one short and easy English podcast episode or video about IT. After I watch it, ask me 3 simple questions about it, one at a time.`,
+     out:`Block 3 — Speaking (optional). Ask me 3 simple questions about my week, one at a time. I answer in 1–3 sentences. Correct me after each answer.`},
+    {en:'daily standup role-play',
+     inp:INPUT(150,NEW_TOPIC),
+     out:`Block 3 — Speaking. Role-play: you are my team lead in a daily standup; I'm a junior developer. Ask what I did yesterday, what I'll do today and if I have blockers. Max 2 short sentences per turn. Don't correct me during the role-play. When I say "stop", give me: (a) 5 of my sentences corrected, (b) 5 useful standup phrases at A2–B1, (c) a score 1–5 for fluency, accuracy and vocabulary. No flattery.`},
+    {en:'long reading and retelling',
+     inp:INPUT(250,NEW_TOPIC),
+     out:`Block 3 — Speaking. Ask me to retell the text in 3–5 sentences. I answer by voice or text. Then give me a table: original | corrected | error type | short rule in Ukrainian. Fix errors only and keep my style.`},
+    {en:'shadowing and pronunciation',
+     inp:`Block 2 — Input. Write a short A2 dialogue (about 100 words) between two developers. Bold the stressed words. Then ask me 3 questions, one at a time. Wait for my answers.`,
+     out:`Block 3 — Speaking. Give me 6 pairs of similar English sounds for Ukrainian speakers, like ship/sheep, and 3 sentences from the dialogue to say aloud. I repeat them by voice. Then ask me 3 short questions about my day, one at a time, and correct me after each answer.`},
+    {en:'writing for work: README and commit messages',
+     inp:`Block 2 — Input. Write one A2 paragraph that looks like real developer documentation. List 5 key words with Ukrainian translation. Ask me 3 questions about it, one at a time. Then show me a more natural B1 version.`,
+     out:`Block 3 — Writing. Ask me to write 3–5 sentences for a README about a project of mine and one commit message in Conventional Commits style. I try first. Then give me a table: original | corrected | error type | short rule in Ukrainian.`},
+    {en:'job interview or code review role-play',
+     inp:INPUT(150,NEW_TOPIC),
+     out:`Block 3 — Speaking. Role-play: you interview me for a junior developer job. Max 2 short sentences per turn. Don't correct me during the role-play. When I say "stop", give me: (a) 5 of my sentences corrected, (b) 5 useful interview phrases at A2–B1, (c) a score 1–5 for fluency, accuracy and vocabulary. No flattery.`},
+    {en:'weekly check',
+     inp:`Block 2 — Weekly check. Give me 5 grammar items and 5 vocabulary items from my error_log.md and vocab.md, one at a time. Wait for my answers. Score me honestly.`,
+     out:`Block 3 — Weekly check. Give me one 60-word writing task and one speaking prompt. Score both with CEFR A2/B1 descriptors, compare with last week and name one focus for next week. Be strict: unwarranted praise does not help me.`},
+    {en:'first lesson: words, reading and talking about me',
+     week:{f:'Перший урок',x:'Тижнева перевірка P8 почнеться, коли буде що перевіряти',inp:'Текст про день джуніора',out:'Розмова про тебе'},
+     inp:INPUT(150,'a normal day of a junior developer'),
+     out:`Block 3 — Speaking. Ask me 5 simple questions about me, my studies and my IT goals, one at a time. I answer in 1–3 sentences. Correct me after each answer.`}
+  ];
+  const WORDS=`Block 1 — Words. Give me 7 useful A2 words for IT with Ukrainian translation and one example sentence each. Do not repeat words from vocab.md. Then quiz me: show the Ukrainian word, I write an English sentence with it.`;
+
   const pad=n=>String(n).padStart(2,'0');
   const key=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
   const today=new Date(); today.setHours(12,0,0,0);
@@ -731,6 +781,26 @@ blocker — Do you have any blockers?</pre></div>
 
   function setDay(r){ state.days[TK]=r; persist(TK); render(); }
 
+  function copyText(btn,txt,pre){
+    const ok=()=>{btn.textContent='Скопійовано'; btn.classList.add('done'); setTimeout(()=>{btn.textContent=btn.dataset.label;btn.classList.remove('done');},1800);};
+    // Старий спосіб копіювання: спрацьовує там, де navigator.clipboard заблокований.
+    const legacy=()=>{
+      const ta=document.createElement('textarea'); ta.value=txt; ta.readOnly=true;
+      ta.style.cssText='position:fixed;top:0;left:0;opacity:0';
+      document.body.append(ta); ta.select(); ta.setSelectionRange(0,txt.length);
+      let done=false; try{ done=document.execCommand('copy'); }catch(e){}
+      ta.remove(); return done;
+    };
+    const fallback=()=>{
+      if(legacy()){ ok(); return; }
+      const det=pre.closest('details'); if(det) det.open=true;
+      const s=window.getSelection(),rg=document.createRange(); rg.selectNodeContents(pre); s.removeAllRanges(); s.addRange(rg);
+      btn.textContent='Виділено, скопіюй вручну';
+    };
+    btn.dataset.label=btn.dataset.label||btn.textContent;
+    try{ navigator.clipboard.writeText(txt).then(ok,fallback); }catch(e){ fallback(); }
+  }
+
   // Застосунок на телефоні може днями лишатися у фоні: коли настав новий день, відкриваємо його заново.
   function checkNewDay(){ if(key(new Date())!==TK) location.reload(); }
   document.addEventListener('visibilitychange',()=>{ if(!document.hidden) checkNewDay(); });
@@ -744,6 +814,20 @@ blocker — Do you have any blockers?</pre></div>
   document.getElementById('today-title').textContent='Сьогодні · '+wd.n+', '+today.toLocaleDateString('uk-UA',{day:'numeric',month:'long'});
   document.getElementById('today-focus').textContent='Фокус дня: '+wd.f+'. '+wd.x+'.';
   const descs=[STRANDS[0].d, wd.inp, wd.out, STRANDS[3].d];
+  const blockPre=[];
+  const lessonPre=document.getElementById('lesson-pre');
+
+  function renderPrompts(){
+    const prior=Object.keys(state.days).filter(k=>k!==TK&&counted(state.days[k])).length;
+    const dow=today.getDay(), l=LESSONS[dow===6&&prior<3?7:dow], w=l.week||wd;
+    document.getElementById('today-focus').textContent='Фокус дня: '+w.f+'. '+w.x+'.';
+    document.querySelector('#blk-1 .d').textContent=w.inp;
+    document.querySelector('#blk-2 .d').textContent=w.out;
+    const wrap=`Block 4 — Wrap-up. From today's lesson: 1) list my errors as rows for error_log.md (${TK} | my phrase | correct | category | ×); 2) make max 7 Anki cards as TSV (Front: Ukrainian sentence <tab> Back: English sentence).`;
+    [WORDS,l.inp,l.out,wrap].forEach((t,i)=>{blockPre[i].textContent=t;});
+    lessonPre.textContent=`Day ${prior+1}. Let's do the full 30-minute lesson: words, input, speaking, wrap-up. Today's focus: ${l.en}. Guide me step by step, one block at a time.`;
+  }
+  document.getElementById('copy-lesson').addEventListener('click',ev=>copyText(ev.currentTarget,lessonPre.textContent,lessonPre));
 
   STRANDS.forEach((s,i)=>{
     const b=document.createElement('button');
@@ -751,7 +835,13 @@ blocker — Do you have any blockers?</pre></div>
     b.innerHTML='<span class="box"></span><span><span class="t"></span><br><span class="d"></span></span><span class="m">'+s.m+' хв</span>';
     b.querySelector('.t').textContent=s.t; b.querySelector('.d').textContent=descs[i];
     b.addEventListener('click',()=>{const r=JSON.parse(JSON.stringify(dayRec(TK))); r.b[i]=!r.b[i]; setDay(r);});
-    blocksEl.appendChild(b);
+    const wrap=document.createElement('div'); wrap.className='blockwrap';
+    const bp=document.createElement('div'); bp.className='bp';
+    bp.innerHTML='<button type="button" class="copy">Копіювати промпт</button><details><summary>Показати текст</summary><pre></pre></details>';
+    const pre=bp.querySelector('pre'), copy=bp.querySelector('.copy');
+    blockPre[i]=pre; copy.id='copy-blk-'+i;
+    copy.addEventListener('click',()=>copyText(copy,pre.textContent,pre));
+    wrap.append(b,bp); blocksEl.appendChild(wrap);
   });
   minBtn.addEventListener('click',()=>{const r=JSON.parse(JSON.stringify(dayRec(TK))); r.min=!r.min; setDay(r);});
 
@@ -771,6 +861,7 @@ blocker — Do you have any blockers?</pre></div>
     const r=dayRec(TK);
     STRANDS.forEach((s,i)=>document.getElementById('blk-'+i).setAttribute('aria-pressed',String(!!r.b[i])));
     minBtn.setAttribute('aria-pressed',String(!!r.min));
+    renderPrompts();
     // stats
     let streak=0; const d=new Date(today);
     if(!counted(state.days[TK])) d.setDate(d.getDate()-1);
@@ -858,11 +949,7 @@ in Ukrainian: "[your message]"`]
     d.querySelector('.id').textContent=id; d.querySelector('.ti').textContent=ti; d.querySelector('.wh').textContent=wh;
     const pre=d.querySelector('pre'); pre.textContent=txt;
     const btn=d.querySelector('.copy'); btn.id='copy-'+id;
-    btn.addEventListener('click',()=>{
-      const ok=()=>{btn.textContent='Скопійовано'; btn.classList.add('done'); setTimeout(()=>{btn.textContent='Копіювати';btn.classList.remove('done');},1800);};
-      const fallback=()=>{const s=window.getSelection(),rg=document.createRange(); rg.selectNodeContents(pre); s.removeAllRanges(); s.addRange(rg); btn.textContent='Виділено, натисни Ctrl+C';};
-      try{ navigator.clipboard.writeText(txt).then(ok,fallback); }catch(e){ fallback(); }
-    });
+    btn.addEventListener('click',()=>copyText(btn,txt,pre));
     pe.appendChild(d);
   });
 })();
