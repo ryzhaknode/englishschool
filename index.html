@@ -274,7 +274,7 @@ img{max-width:100%}
 <span class="k">Date:</span>   day 1 · 30 min<br><br>
 &nbsp;&nbsp;feat(english): first full day<br><br>
 &nbsp;&nbsp;<span class="g">+ 6</span> new Anki cards<br>
-&nbsp;&nbsp;<span class="g">+ 1</span> A2 text about Git branches<br>
+&nbsp;&nbsp;<span class="g">+ 1</span> A2 text about Nintendo<br>
 &nbsp;&nbsp;<span class="g">+ 5</span> standup sentences, corrected<br>
 &nbsp;&nbsp;<span class="g">+ 2</span> errors → error_log.md
   </div>
@@ -294,6 +294,7 @@ img{max-width:100%}
         <span class="save-state" id="save-state">збережено на пристрої</span>
       </div>
       <p class="note" id="today-focus" style="margin-top:6px"></p>
+      <p class="note" id="today-story" style="margin-top:6px;font-weight:600;color:var(--ink)"></p>
       <div class="auth" id="auth">
         <div id="auth-off" class="msg">Прогрес зберігається лише на цьому пристрої. Щоб синхронізувати з базою, заповни <span class="mono">config.js</span> (див. README).</div>
         <form id="auth-form" hidden>
@@ -654,46 +655,89 @@ blocker — Do you have any blockers?</pre></div>
   ];
   // index by JS getDay(): 0 = Sun
   const WEEK=[
-    {n:'Нд',f:'Легкий день',x:'Подкаст чи відео для задоволення, лише мінімум в Anki',c:'var(--muted)',inp:'Подкаст або відео для задоволення',out:'Лише якщо хочеться'},
-    {n:'Пн',f:'Стендап',x:'Рольова гра «daily standup» голосом, виправлення (P4)',c:'var(--s3)',inp:'Короткий текст від Claude (P3)',out:'Стендап голосом (P4)'},
-    {n:'Вт',f:'Довге читання',x:'IT-текст від Claude (P3) або Breaking News English',c:'var(--s2)',inp:'Довгий текст: P3 або Breaking News English',out:'Переказ 3–5 речень (P5)'},
-    {n:'Ср',f:'Shadowing',x:'1–2 хв кліпу з транскриптом + пари ship/sheep',c:'var(--s4)',inp:'Кліп з транскриптом (6 Minute English)',out:'Shadowing уголос'},
-    {n:'Чт',f:'Письмо з роботи',x:'README, коміт, промпт англійською → P5 / P10',c:'var(--s3)',inp:'Абзац документації (P9)',out:'README або коміт (P5, P10)'},
-    {n:'Пт',f:'Співбесіда / code review',x:'Рольова гра на варіантах P4',c:'var(--s3)',inp:'Короткий текст від Claude (P3)',out:'Співбесіда або code review (P4)'},
+    {n:'Нд',f:'Легкий день',x:'Відео чи подкаст про історію дня, лише мінімум в Anki',c:'var(--muted)',inp:'Відео або подкаст про історію дня',out:'Лише якщо хочеться'},
+    {n:'Пн',f:'Стендап про історію',x:'Рольова гра голосом: звіт про героя дня, виправлення (P4)',c:'var(--s3)',inp:'Короткий текст про реальну історію (P3)',out:'Стендап голосом (P4)'},
+    {n:'Вт',f:'Довге читання',x:'Довгий текст про реальну історію (P3) або Breaking News English',c:'var(--s2)',inp:'Довгий текст: P3 або Breaking News English',out:'Переказ 3–5 речень (P5)'},
+    {n:'Ср',f:'Shadowing',x:'Діалог про історію дня + пари ship/sheep',c:'var(--s4)',inp:'Діалог про історію дня',out:'Shadowing уголос'},
+    {n:'Чт',f:'Письмо про історію',x:'Короткий профіль героя дня → перевірка P5',c:'var(--s3)',inp:'Абзац-профіль героя дня',out:'Профіль 3–5 речень (P5)'},
+    {n:'Пт',f:'Співбесіда',x:'Рольова гра на реальних фактах з історії дня (P4)',c:'var(--s3)',inp:'Короткий текст про реальну історію (P3)',out:'Співбесіда голосом (P4)'},
     {n:'Сб',f:'Тижнева перевірка',x:'P8, злиття журналу, новий чат у Claude',c:'var(--s1)',inp:'Тест P8',out:'Письмо 60 слів і монолог (P8)'}
   ];
 
-  const INPUT=(words,extra)=>`Block 2 — Input. Write a ${words}-word text at CEFR A2 about ${extra}. Max 5 words above A2 in bold. Then ask me 5 questions, one at a time. Wait for my answers.`;
-  const NEW_TOPIC='a new IT topic we have not used yet';
+  // Історія дня: усі блоки заняття будуються навколо однієї реальної людини чи компанії.
+  // n — про кого, h — з якого боку розповідати. Номер заняття вибирає історію, тому пропущені дні її не з'їдають.
+  const STORIES=[
+    {n:'Nintendo',h:'from playing cards in 1889 to video games'},
+    {n:'Jan Koum',h:'from Ukraine to the United States and WhatsApp'},
+    {n:'Airbnb',h:'how the founders sold cereal boxes to save their company'},
+    {n:'Steve Jobs',h:'why he left Apple in 1985 and how he came back'},
+    {n:'LEGO',h:'how a family toy company almost went bankrupt and came back'},
+    {n:'Oprah Winfrey',h:'from a hard childhood to a media empire'},
+    {n:'Netflix',h:'how a small DVD company beat Blockbuster'},
+    {n:'Grammarly',h:'how a product with Ukrainian founders became a global company'},
+    {n:'Walt Disney',h:'how his first studio failed before Mickey Mouse'},
+    {n:'Samsung',h:'from a small trading company to smartphones'},
+    {n:'Jeff Bezos',h:'why he left a good job to sell books online'},
+    {n:'Adidas and Puma',h:'two brothers, one family company and a long fight'},
+    {n:'Marie Curie',h:'how she won two Nobel Prizes in two different sciences'},
+    {n:'Nokia',h:'from a paper mill to phones and the fall of a leader'},
+    {n:'Lionel Messi',h:'how a boy with a health problem moved to Barcelona'},
+    {n:'Slack',h:'how a failed video game became a work app'},
+    {n:'Jensen Huang',h:'how Nvidia started and why its chips matter for AI'},
+    {n:'IKEA',h:'how a boy selling matches built a furniture company'},
+    {n:'Taylor Swift',h:'why she recorded her old albums again'},
+    {n:'Kodak',h:'it built an early digital camera and still lost the market'},
+    {n:'Elon Musk',h:'how SpaceX survived its first rocket failures'},
+    {n:'Toyota',h:'from weaving machines to cars'},
+    {n:'Max Levchin',h:'from Kyiv to the United States and PayPal'},
+    {n:'Instagram',h:'how a check-in app called Burbn became a photo app'},
+    {n:'Sara Blakely',h:'how she built Spanx with her own small savings'},
+    {n:'Ferrari and Lamborghini',h:'why a tractor maker started building sports cars'},
+    {n:'Linus Torvalds',h:'how a student project became Linux, and why he made Git'},
+    {n:'YouTube',h:'how a young startup was sold to Google in less than two years'},
+    {n:'Henry Ford',h:'how the moving assembly line changed work'},
+    {n:'GitLab',h:'how a project from Kharkiv grew into a public company'},
+    {n:'Serena Williams',h:'from public tennis courts in California to the top of the sport'},
+    {n:'Starbucks',h:'how a trip to Italy changed a small coffee company'},
+    {n:'Ada Lovelace',h:'why she is often called the first computer programmer'},
+    {n:'Nova Poshta',h:'how a delivery company from Poltava grew across Ukraine'},
+    {n:'Bill Gates',h:'why he left Harvard to start Microsoft'},
+    {n:'Spotify',h:'how it answered the music piracy problem'}
+  ];
+  const FACTS='Use only real, well-documented facts. Never invent quotes, dates or numbers. If you are not sure about a detail, leave it out. If you can search the web, check the key facts.';
+  const WORDS=s=>`Block 1 — Words. ${s} Give me 7 useful A2 words that I need to talk about this story, with Ukrainian translation and one example sentence each. Example sentences must use real facts from the story. ${FACTS} Do not repeat words from vocab.md. Then quiz me: show the Ukrainian word, I write an English sentence with it.`;
+  const TEXT=(words,s)=>`Block 2 — Input. ${s} Write a ${words}-word text at CEFR A2 about this story, with real names and one surprising fact. ${FACTS} Max 5 words above A2 in bold. Then ask me 5 questions, one at a time. Wait for my answers.`;
+  const FEEDBACK=role=>`Don't correct me during the role-play. When I say "stop", give me: (a) 5 of my sentences corrected, (b) 5 useful ${role} phrases at A2–B1, (c) a score 1–5 for fluency, accuracy and vocabulary. No flattery.`;
+  const TABLE='Then give me a table: original | corrected | error type | short rule in Ukrainian. Fix errors only and keep my style.';
   // Промпти на день. Індекс = JS getDay(); 7 — перша субота, коли перевіряти ще нічого.
   const LESSONS=[
     {en:'light day: listening for pleasure, no pressure',
-     inp:`Block 2 — Input. Today is a light day. Suggest one short and easy English podcast episode or video about IT. After I watch it, ask me 3 simple questions about it, one at a time.`,
-     out:`Block 3 — Speaking (optional). Ask me 3 simple questions about my week, one at a time. I answer in 1–3 sentences. Correct me after each answer.`},
+     inp:s=>`Block 2 — Input. ${s} Today is a light day. Tell me what to search for on YouTube to find a short and easy English video or podcast about this story. Do not invent links. After I watch it, ask me 3 simple questions about it, one at a time.`,
+     out:s=>`Block 3 — Speaking (optional). ${s} Ask me 3 simple questions about what I found interesting in this story, one at a time. I answer in 1–3 sentences. Correct me after each answer.`},
     {en:'daily standup role-play',
-     inp:INPUT(150,NEW_TOPIC),
-     out:`Block 3 — Speaking. Role-play: you are my team lead in a daily standup; I'm a junior developer. Ask what I did yesterday, what I'll do today and if I have blockers. Max 2 short sentences per turn. Don't correct me during the role-play. When I say "stop", give me: (a) 5 of my sentences corrected, (b) 5 useful standup phrases at A2–B1, (c) a score 1–5 for fluency, accuracy and vocabulary. No flattery.`},
+     inp:s=>TEXT(150,s),
+     out:s=>`Block 3 — Speaking. ${s} Role-play: a daily standup about this story. You are my team lead. I report as if this story were my project: what happened, what came next and what the main problem was. Stay close to the real facts. Max 2 short sentences per turn. ${FEEDBACK('standup')}`},
     {en:'long reading and retelling',
-     inp:INPUT(250,NEW_TOPIC),
-     out:`Block 3 — Speaking. Ask me to retell the text in 3–5 sentences. I answer by voice or text. Then give me a table: original | corrected | error type | short rule in Ukrainian. Fix errors only and keep my style.`},
+     inp:s=>TEXT(250,s),
+     out:s=>`Block 3 — Speaking. ${s} Ask me to retell the text in 3–5 sentences and say what I would do in this situation. I answer by voice or text. ${TABLE}`},
     {en:'shadowing and pronunciation',
-     inp:`Block 2 — Input. Write a short A2 dialogue (about 100 words) between two developers. Bold the stressed words. Then ask me 3 questions, one at a time. Wait for my answers.`,
-     out:`Block 3 — Speaking. Give me 6 pairs of similar English sounds for Ukrainian speakers, like ship/sheep, and 3 sentences from the dialogue to say aloud. I repeat them by voice. Then ask me 3 short questions about my day, one at a time, and correct me after each answer.`},
-    {en:'writing for work: README and commit messages',
-     inp:`Block 2 — Input. Write one A2 paragraph that looks like real developer documentation. List 5 key words with Ukrainian translation. Ask me 3 questions about it, one at a time. Then show me a more natural B1 version.`,
-     out:`Block 3 — Writing. Ask me to write 3–5 sentences for a README about a project of mine and one commit message in Conventional Commits style. I try first. Then give me a table: original | corrected | error type | short rule in Ukrainian.`},
-    {en:'job interview or code review role-play',
-     inp:INPUT(150,NEW_TOPIC),
-     out:`Block 3 — Speaking. Role-play: you interview me for a junior developer job. Max 2 short sentences per turn. Don't correct me during the role-play. When I say "stop", give me: (a) 5 of my sentences corrected, (b) 5 useful interview phrases at A2–B1, (c) a score 1–5 for fluency, accuracy and vocabulary. No flattery.`},
-    {en:'weekly check',
-     inp:`Block 2 — Weekly check. Give me 5 grammar items and 5 vocabulary items from my error_log.md and vocab.md, one at a time. Wait for my answers. Score me honestly.`,
-     out:`Block 3 — Weekly check. Give me one 60-word writing task and one speaking prompt. Score both with CEFR A2/B1 descriptors, compare with last week and name one focus for next week. Be strict: unwarranted praise does not help me.`},
-    {en:'first lesson: words, reading and talking about me',
-     week:{f:'Перший урок',x:'Тижнева перевірка P8 почнеться, коли буде що перевіряти',inp:'Текст про день джуніора',out:'Розмова про тебе'},
-     inp:INPUT(150,'a normal day of a junior developer'),
-     out:`Block 3 — Speaking. Ask me 5 simple questions about me, my studies and my IT goals, one at a time. I answer in 1–3 sentences. Correct me after each answer.`}
+     inp:s=>`Block 2 — Input. ${s} Write a short A2 dialogue (about 100 words) between two friends who talk about this story and share real facts. ${FACTS} Bold the stressed words. Then ask me 3 questions, one at a time. Wait for my answers.`,
+     out:s=>`Block 3 — Speaking. ${s} Give me 6 pairs of similar English sounds for Ukrainian speakers, like ship/sheep, and 3 sentences from the dialogue to say aloud. I repeat them by voice. Then ask me 3 short questions about the story, one at a time, and correct me after each answer.`},
+    {en:'writing a short profile',
+     inp:s=>`Block 2 — Input. ${s} Write one A2 profile paragraph about this story. ${FACTS} List 5 key words with Ukrainian translation. Ask me 3 questions about it, one at a time. Then show me a more natural B1 version.`,
+     out:s=>`Block 3 — Writing. ${s} Ask me to write a short profile in 3–5 sentences and one sentence about what we can learn from this story. I try first. ${TABLE}`},
+    {en:'job interview role-play with real facts',
+     inp:s=>TEXT(150,s),
+     out:s=>`Block 3 — Speaking. ${s} Role-play: you interview me for a job connected with this story, at this company or at a company or team this person is known for. Use real facts in your questions. ${FACTS} Max 2 short sentences per turn. ${FEEDBACK('interview')}`},
+    {en:'weekly check',check:true,
+     words:()=>`Block 1 — Words. Review week: give me 7 words from vocab.md and from this week's stories, one at a time, in Ukrainian. I write an English sentence with each word. Do not add new words.`,
+     inp:()=>`Block 2 — Weekly check. Give me 5 grammar items and 5 vocabulary items from my error_log.md and vocab.md, one at a time. Wait for my answers. Score me honestly.`,
+     out:()=>`Block 3 — Weekly check. Give me one 60-word writing task and one speaking prompt about the most interesting story of this week. Score both with CEFR A2/B1 descriptors, compare with last week and name one focus for next week. Be strict: unwarranted praise does not help me.`},
+    {en:'first lesson: words, reading and speaking',
+     week:{f:'Перший урок',x:'Тижнева перевірка P8 почнеться, коли буде що перевіряти',inp:'Текст про історію дня',out:'Розмова про історію дня'},
+     inp:s=>TEXT(150,s),
+     out:s=>`Block 3 — Speaking. ${s} Ask me 5 simple questions about this story and what I think about it, one at a time. I answer in 1–3 sentences. Correct me after each answer.`}
   ];
-  const WORDS=`Block 1 — Words. Give me 7 useful A2 words for IT with Ukrainian translation and one example sentence each. Do not repeat words from vocab.md. Then quiz me: show the Ukrainian word, I write an English sentence with it.`;
 
   const pad=n=>String(n).padStart(2,'0');
   const key=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
@@ -820,12 +864,14 @@ blocker — Do you have any blockers?</pre></div>
   function renderPrompts(){
     const prior=Object.keys(state.days).filter(k=>k!==TK&&counted(state.days[k])).length;
     const dow=today.getDay(), l=LESSONS[dow===6&&prior<3?7:dow], w=l.week||wd;
+    const story=STORIES[prior%STORIES.length], s=`Today's story: ${story.n} — ${story.h}.`;
     document.getElementById('today-focus').textContent='Фокус дня: '+w.f+'. '+w.x+'.';
+    document.getElementById('today-story').textContent=l.check?'Сьогодні повторюємо історії цього тижня.':'Історія дня: '+story.n+' — '+story.h;
     document.querySelector('#blk-1 .d').textContent=w.inp;
     document.querySelector('#blk-2 .d').textContent=w.out;
     const wrap=`Block 4 — Wrap-up. From today's lesson: 1) list my errors as rows for error_log.md (${TK} | my phrase | correct | category | ×); 2) make max 7 Anki cards as TSV (Front: Ukrainian sentence <tab> Back: English sentence).`;
-    [WORDS,l.inp,l.out,wrap].forEach((t,i)=>{blockPre[i].textContent=t;});
-    lessonPre.textContent=`Day ${prior+1}. Let's do the full 30-minute lesson: words, input, speaking, wrap-up. Today's focus: ${l.en}. Guide me step by step, one block at a time.`;
+    [(l.words||WORDS)(s),l.inp(s),l.out(s),wrap].forEach((t,i)=>{blockPre[i].textContent=t;});
+    lessonPre.textContent=`Day ${prior+1}. Let's do the full 30-minute lesson: words, input, speaking, wrap-up. Today's focus: ${l.en}. ${l.check?"Use this week's stories.":`${s} Build every block around this story. ${FACTS}`} Guide me step by step, one block at a time.`;
   }
   document.getElementById('copy-lesson').addEventListener('click',ev=>copyText(ev.currentTarget,lessonPre.textContent,lessonPre));
 
@@ -904,10 +950,14 @@ Rules:
 5. End each turn with one question to keep me talking.
 6. Grammar scope: Present Simple, Past Simple, will/going to, Present Perfect (results, already/yet,
    for/since), Present Continuous, modals, first conditional. Don't teach other tenses unless I ask.
+7. Content: build texts, dialogues, examples and conversations around real, interesting stories about
+   famous people, entrepreneurs and companies, not made-up situations. Use only well-documented facts.
+   Never invent quotes, dates or numbers. If you are not sure about a detail, leave it out.
 Use the files curriculum.md, error_log.md and vocab.md as my current plan.`],
     ['P2','Старт заняття з розминкою на помилках','щодня',`Day [N]. Start today's session: 1) a 2-minute warm-up quiz on the top 3 errors in my error_log.md,
 one question at a time; 2) then today's task: [standup role-play / reading / writing].`],
-    ['P3','Градуйований IT-текст','Пн, Вт, Пт',`Write a 150-word text at CEFR A2 about [how Git branches work / what an LLM token is].
+    ['P3','Текст про реальну історію','Пн, Вт, Пт',`Write a 150-word text at CEFR A2 about [a famous person, entrepreneur or company], with one surprising fact.
+Use only real, well-documented facts. Never invent quotes, dates or numbers.
 Use max 5 words above A2 and put them in bold. Then give 5 comprehension questions
 (true/false + open). Wait for my answers before showing the key. After that, give a glossary
 of the bold words: simple English definition + Ukrainian translation.`],
