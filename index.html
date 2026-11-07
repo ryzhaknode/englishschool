@@ -667,17 +667,19 @@ blocker — Do you have any blockers?</pre></div>
   const cfg=window.SCHOOL_CONFIG||{};
   let sb=null, session=null, pushing=false;
 
-  function persist(k){ if(k) state.dirty[k]=1; saveLocal(); pushDirty(); }
+  // dirty[k] — лічильник змін дня: дає змогу помітити зміну, зроблену під час відправки.
+  function persist(k){ if(k) state.dirty[k]=(state.dirty[k]||0)+1; saveLocal(); pushDirty(); }
 
   async function pushDirty(){
     if(!sb||!session||pushing||!navigator.onLine) { if(sb&&session&&!navigator.onLine) saveEl.textContent='офлайн · синхронізую пізніше'; return; }
     const keys=Object.keys(state.dirty); if(!keys.length) return;
     pushing=true; saveEl.textContent='зберігаю…';
+    const sent={...state.dirty};
     const rows=keys.map(k=>({user_id:session.user.id,day:k,blocks:dayRec(k).b.map(Boolean),min:!!dayRec(k).min,updated_at:new Date().toISOString()}));
     const {error}=await sb.from('progress').upsert(rows);
     pushing=false;
     if(error){ saveEl.textContent='помилка збереження в базі'; console.error(error); return; }
-    keys.forEach(k=>{ delete state.dirty[k]; }); saveLocal();
+    keys.forEach(k=>{ if(state.dirty[k]===sent[k]) delete state.dirty[k]; }); saveLocal();
     saveEl.textContent='збережено в базі';
     if(Object.keys(state.dirty).length) pushDirty();
   }
@@ -728,6 +730,13 @@ blocker — Do you have any blockers?</pre></div>
   window.addEventListener('offline',()=>{ if(session) saveEl.textContent='офлайн · синхронізую пізніше'; });
 
   function setDay(r){ state.days[TK]=r; persist(TK); render(); }
+
+  // Застосунок на телефоні може днями лишатися у фоні: коли настав новий день, відкриваємо його заново.
+  function checkNewDay(){ if(key(new Date())!==TK) location.reload(); }
+  document.addEventListener('visibilitychange',()=>{ if(!document.hidden) checkNewDay(); });
+  window.addEventListener('focus',checkNewDay);
+  window.addEventListener('pageshow',checkNewDay);
+  setInterval(checkNewDay,60000);
 
   const blocksEl=document.getElementById('blocks');
   const minBtn=document.getElementById('min-btn');
