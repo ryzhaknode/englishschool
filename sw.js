@@ -1,6 +1,6 @@
 // Service worker: застосунок відкривається навіть без інтернету.
 // Після зміни файлів збільш номер версії, щоб телефон підтягнув нове.
-const CACHE = 'english-school-v2';
+const CACHE = 'english-school-v3';
 const APP_SHELL = [
   './',
   './index.html',

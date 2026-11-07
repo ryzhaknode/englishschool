@@ -3,6 +3,6 @@
 // anon / publishable key можна тримати в публічному коді: доступ до даних захищають правила RLS з schema.sql.
 // Поки поля порожні, застосунок працює і зберігає прогрес лише на пристрої.
 window.SCHOOL_CONFIG = {
-  SUPABASE_URL: "",       // наприклад "https://abcdefghijkl.supabase.co"
-  SUPABASE_ANON_KEY: ""   // довгий ключ "anon public" або "publishable"
+  SUPABASE_URL: "https://ansymdpbbmjerdkqnyfd.supabase.co",       // наприклад "https://abcdefghijkl.supabase.co"
+  SUPABASE_ANON_KEY: "sb_publishable_JqEwWsJ6oAKHX7KxV2sPtQ__fUW6j4A"   // довгий ключ "anon public" або "publishable"
 };
