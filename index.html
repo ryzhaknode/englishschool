@@ -1,0 +1,865 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Школа англійської для айтішника</title>
+<meta name="description" content="Особиста 30-хвилинна школа англійської з трекером прогресу">
+<meta name="theme-color" content="#2E3ECF">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="English">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one reading column (max 980px) of sections; the tracker sits right under the hero; diagrams are scale-true SVG/HTML, GitHub-style heatmap and CI-style pipeline as subject details */
+:root{
+  --bg:#F2F4F9; --surface:#FFFFFF; --ink:#141A33; --muted:#59617F; --line:#D8DDEA; --soft:#E8ECF6;
+  --accent:#2E3ECF; --accent-ink:#FFFFFF; --hl:#FFD43B; --hl-ink:#2E2400;
+  --s1:#2E3ECF; --s2:#0F8C8C; --s3:#D9A400; --s4:#D2553A;
+  --good:#1E8556; --warn:#B9471A;
+  --h0:#E3E7F1; --h1:#C7CEF5; --h2:#8C99EC; --h3:#2E3ECF;
+  --f-display:"Unbounded","Golos Text",system-ui,sans-serif;
+  --f-body:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0D1120; --surface:#151A2E; --ink:#E7EAF6; --muted:#9AA2C2; --line:#2A3152; --soft:#1C2340;
+  --accent:#8E9BFF; --accent-ink:#0D1120; --hl:#F3C83A; --hl-ink:#231B00;
+  --s1:#8E9BFF; --s2:#3FC2BE; --s3:#F3C83A; --s4:#F08467;
+  --good:#4CC38A; --warn:#F08A4B;
+  --h0:#1F2645; --h1:#2F3A78; --h2:#5163C9; --h3:#8E9BFF;
+  color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#0D1120; --surface:#151A2E; --ink:#E7EAF6; --muted:#9AA2C2; --line:#2A3152; --soft:#1C2340;
+  --accent:#8E9BFF; --accent-ink:#0D1120; --hl:#F3C83A; --hl-ink:#231B00;
+  --s1:#8E9BFF; --s2:#3FC2BE; --s3:#F3C83A; --s4:#F08467;
+  --good:#4CC38A; --warn:#F08A4B;
+  --h0:#1F2645; --h1:#2F3A78; --h2:#5163C9; --h3:#8E9BFF;
+  color-scheme:dark;}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
+.wrap{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:72px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.15;margin:0}
+h1{font-size:clamp(30px,6vw,54px);font-weight:700;letter-spacing:-.01em}
+h2{font-size:clamp(22px,3.4vw,30px);font-weight:700}
+h3{font-size:17px;font-weight:500}
+p{margin:0;max-width:66ch}
+a{color:var(--accent);text-underline-offset:3px}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.lead{font-size:18px;color:var(--muted)}
+.mono{font-family:var(--f-mono)}
+mark{background:var(--hl);color:var(--hl-ink);padding:0 .2em;border-radius:3px}
+section{display:flex;flex-direction:column;gap:24px}
+.sec-head{display:flex;flex-direction:column;gap:10px}
+.note{font-size:13px;color:var(--muted)}
+.grid{display:grid;gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;min-width:0}
+
+/* hero */
+.hero{padding-top:48px;display:grid;grid-template-columns:1.3fr 1fr;gap:32px;align-items:end}
+.hero-text{display:flex;flex-direction:column;gap:18px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 10px;color:var(--muted)}
+.chip b{color:var(--ink);font-weight:600}
+.commit{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;font-family:var(--f-mono);font-size:13px;line-height:1.7;min-width:0;overflow-x:auto}
+.commit .h{color:var(--s4)} .commit .k{color:var(--accent)} .commit .c{color:var(--muted)} .commit .g{color:var(--good)}
+@media (max-width:760px){.hero{grid-template-columns:1fr}}
+
+/* tracker */
+.tracker{display:grid;grid-template-columns:1.1fr 1fr;gap:16px}
+@media (max-width:820px){.tracker{grid-template-columns:1fr}}
+.today-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.blocks{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.block{display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:center;text-align:left;width:100%;
+  background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px;color:var(--ink);font:inherit;cursor:pointer}
+.block:hover{border-color:var(--muted)}
+.block .box{width:22px;height:22px;border-radius:6px;border:2px solid var(--c);display:grid;place-items:center}
+.block[aria-pressed="true"] .box{background:var(--c)}
+.block[aria-pressed="true"] .box::after{content:"";width:8px;height:12px;border:solid var(--surface);border-width:0 3px 3px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.block .t{font-weight:600;line-height:1.3}
+.block .d{font-size:13px;color:var(--muted);line-height:1.4}
+.block .m{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.min-btn{margin-top:12px;width:100%;font:inherit;font-weight:600;border-radius:8px;padding:11px;cursor:pointer;border:1px dashed var(--muted);background:transparent;color:var(--ink)}
+.min-btn[aria-pressed="true"]{background:var(--hl);color:var(--hl-ink);border-style:solid;border-color:var(--hl)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:var(--bg);border-radius:8px;padding:12px;min-width:0}
+.stat .v{font-family:var(--f-display);font-size:26px;font-variant-numeric:tabular-nums;line-height:1.1}
+.stat .l{font-size:12px;color:var(--muted);line-height:1.3;margin-top:4px}
+.bar{height:8px;background:var(--soft);border-radius:99px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--accent);border-radius:99px;width:0}
+.heat-wrap{overflow-x:auto}
+.heat{display:grid;grid-template-rows:repeat(7,14px);grid-auto-flow:column;grid-auto-columns:14px;gap:3px;width:max-content}
+.heat i{border-radius:3px;background:var(--h0)}
+.heat i[data-l="1"]{background:var(--h1)} .heat i[data-l="2"]{background:var(--h2)} .heat i[data-l="3"]{background:var(--h3)}
+.heat i.today{outline:2px solid var(--hl);outline-offset:1px}
+.legend{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.save-state{font-size:12px;color:var(--muted);font-family:var(--f-mono)}
+
+/* clock */
+.clock{display:grid;grid-template-columns:260px 1fr;gap:28px;align-items:center}
+@media (max-width:700px){.clock{grid-template-columns:1fr;justify-items:center}}
+.clock svg{width:100%;max-width:260px;height:auto}
+.strands{display:flex;flex-direction:column;gap:12px;width:100%}
+.strand{display:grid;grid-template-columns:62px 1fr;gap:14px;align-items:start;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.strand:last-child{border-bottom:0}
+.strand .min{font-family:var(--f-mono);font-size:13px;font-weight:600;color:var(--c);padding-top:2px}
+.strand .t{font-weight:600}
+.strand .d{font-size:14px;color:var(--muted)}
+
+/* week */
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+@media (max-width:860px){.week{grid-template-columns:repeat(2,1fr)}}
+.day{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.day .n{font-family:var(--f-mono);font-size:12px;color:var(--muted);display:flex;justify-content:space-between}
+.day .f{font-weight:600;line-height:1.3;font-size:15px}
+.day .x{font-size:13px;color:var(--muted);line-height:1.4}
+.day.is-today{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.day .tag{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--c)}
+
+/* roadmap */
+.chart-box{overflow-x:auto}
+.chart-box svg{display:block;min-width:640px;width:100%;height:auto}
+.stages{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media (max-width:860px){.stages{grid-template-columns:1fr 1fr}}
+@media (max-width:480px){.stages{grid-template-columns:1fr}}
+.stage{display:flex;flex-direction:column;gap:8px}
+.stage .when{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.stage ul{margin:0;padding-left:18px;font-size:14px;display:flex;flex-direction:column;gap:4px}
+.lvl{font-family:var(--f-display);font-size:22px}
+.check{font-size:13px;border-top:1px solid var(--line);padding-top:8px;color:var(--muted)}
+.check b{color:var(--ink)}
+
+/* grammar */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:820px){.two{grid-template-columns:1fr}}
+.hbars{display:flex;flex-direction:column;gap:10px}
+.hb{display:grid;grid-template-columns:150px 1fr 52px;gap:10px;align-items:center;font-size:14px}
+.hb .track{height:16px;background:var(--soft);border-radius:4px;overflow:hidden}
+.hb .track i{display:block;height:100%;background:var(--accent)}
+.hb.fade .track i{background:var(--muted);opacity:.55}
+.hb .p{font-family:var(--f-mono);font-size:13px;text-align:right;font-variant-numeric:tabular-nums}
+@media (max-width:480px){.hb{grid-template-columns:110px 1fr 46px;font-size:13px}}
+.queue{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.queue li{display:grid;grid-template-columns:32px 1fr;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.queue li:last-child{border-bottom:0}
+.queue .q{font-family:var(--f-mono);font-size:13px;color:var(--accent);font-weight:600;padding-top:1px}
+.queue .w{font-weight:600}
+.queue .e{font-family:var(--f-mono);font-size:12.5px;color:var(--muted);line-height:1.5}
+.later{font-size:14px;color:var(--muted)}
+
+/* pitfalls */
+.errs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (max-width:860px){.errs{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.errs{grid-template-columns:1fr}}
+.err{display:flex;flex-direction:column;gap:8px}
+.err .lbl{font-size:13px;color:var(--muted)}
+.bad,.ok{font-family:var(--f-mono);font-size:13.5px;padding:6px 10px;border-radius:6px;line-height:1.45}
+.bad{background:color-mix(in srgb,var(--warn) 12%,transparent);color:var(--ink);text-decoration:line-through;text-decoration-color:var(--warn)}
+.ok{background:color-mix(in srgb,var(--good) 14%,transparent);color:var(--ink)}
+.ff{display:flex;flex-wrap:wrap;gap:8px}
+.ffp{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:14px}
+.ffp s{color:var(--warn);text-decoration-color:var(--warn)}
+.ffp b{font-weight:600}
+.sounds{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media (max-width:760px){.sounds{grid-template-columns:1fr 1fr}}
+.sound .ipa{font-family:var(--f-mono);font-size:20px;color:var(--accent)}
+.sound .pr{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.sound .ex{font-size:14px}
+
+/* pipeline */
+.pipe{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px}
+.stg{flex:1 1 150px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:4px;position:relative;min-width:0}
+.stg .s{font-family:var(--f-mono);font-size:12px;color:var(--good);display:flex;gap:6px;align-items:center}
+.stg .s::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--good)}
+.stg .who{font-size:12px;color:var(--muted)}
+.stg .w{font-weight:600}
+.files{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (max-width:700px){.files{grid-template-columns:1fr}}
+.file .fn{font-family:var(--f-mono);font-size:14px;font-weight:600;color:var(--accent)}
+.file pre{margin:8px 0 0;font-family:var(--f-mono);font-size:12px;color:var(--muted);white-space:pre-wrap;line-height:1.5}
+
+/* prompts */
+.prompts{display:flex;flex-direction:column;gap:10px}
+details.pr{background:var(--surface);border:1px solid var(--line);border-radius:8px}
+details.pr summary{cursor:pointer;list-style:none;padding:14px 16px;display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:center}
+details.pr summary::-webkit-details-marker{display:none}
+details.pr summary .id{font-family:var(--f-mono);font-weight:600;color:var(--accent)}
+details.pr summary .ti{font-weight:600;line-height:1.3}
+details.pr summary .wh{font-size:12px;color:var(--muted);font-family:var(--f-mono)}
+details.pr[open] summary{border-bottom:1px solid var(--line)}
+.pbody{padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.pbody pre{margin:0;background:var(--bg);border-radius:6px;padding:12px;font-family:var(--f-mono);font-size:12.5px;line-height:1.55;white-space:pre-wrap;overflow-x:auto;min-width:0}
+.copy{align-self:flex-start;font:inherit;font-size:13px;font-weight:600;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);border-radius:6px;padding:6px 12px;cursor:pointer}
+.copy.done{background:var(--good);border-color:var(--good)}
+
+/* resources */
+.tbl-box{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:14px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--f-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:600}
+tr:last-child td{border-bottom:0}
+td .lv{font-family:var(--f-mono);font-size:12px;white-space:nowrap}
+
+/* habit */
+.rules{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media (max-width:700px){.rules{grid-template-columns:1fr}}
+.rule .big{font-family:var(--f-display);font-size:28px;color:var(--accent);line-height:1}
+.ifthen{font-family:var(--f-mono);font-size:13px;background:var(--bg);border-radius:6px;padding:10px;margin-top:8px}
+
+/* start */
+.start{counter-reset:s;list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.start li{counter-increment:s;display:grid;grid-template-columns:36px 1fr;gap:12px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px}
+.start li::before{content:counter(s);font-family:var(--f-display);font-size:18px;color:var(--accent)}
+footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:20px;display:flex;flex-direction:column;gap:6px}
+
+@media (prefers-reduced-motion:no-preference){.bar>i,.block .box{transition:all .25s ease}}
+
+/* base reset (the artifact host used to add this) */
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+/* auth */
+.auth{margin-top:12px;padding:12px;border-radius:8px;background:var(--soft);display:flex;flex-direction:column;gap:8px;font-size:14px}
+.auth form{display:flex;flex-wrap:wrap;gap:8px}
+.auth input{flex:1 1 160px;min-width:0;font:inherit;padding:9px 10px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.auth .row{display:flex;gap:8px;flex-wrap:wrap;width:100%}
+.auth button{font:inherit;font-weight:600;padding:9px 12px;border-radius:6px;cursor:pointer;border:1px solid var(--accent)}
+.auth .primary{background:var(--accent);color:var(--accent-ink)}
+.auth .ghost{background:transparent;color:var(--accent)}
+.auth .msg{font-size:13px;color:var(--muted)}
+.auth .msg.err{color:var(--warn)}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+
+<header class="hero">
+  <div class="hero-text">
+    <span class="eyebrow">Особиста школа англійської · v1.0 · старт 7 листопада 2026</span>
+    <h1>30 хвилин на день.<br>Англійська, вбудована в IT.</h1>
+    <p class="lead">Твій вчитель — Claude, твої підручники — документація, подкасти й власний код. Мета не «вивчити всі часи», а <mark>говорити, слухати, читати й писати</mark> на рівні B1, де ти вже вільно вступаєш у робочу розмову.</p>
+    <div class="chips">
+      <span class="chip">ціль <b>B1</b></span>
+      <span class="chip">темп <b>30 хв/день</b></span>
+      <span class="chip">≈ <b>165 год/рік</b></span>
+      <span class="chip">граматика <b>9 пунктів</b>, не 12 часів</span>
+    </div>
+  </div>
+  <div class="commit" aria-label="Приклад: як виглядає один день у форматі git log">
+<span class="h">commit</span> 7c2e1a9 <span class="c">(HEAD -&gt; english)</span><br>
+<span class="k">Author:</span> Denis<br>
+<span class="k">Date:</span>   day 1 · 30 min<br><br>
+&nbsp;&nbsp;feat(english): first full day<br><br>
+&nbsp;&nbsp;<span class="g">+ 6</span> new Anki cards<br>
+&nbsp;&nbsp;<span class="g">+ 1</span> A2 text about Git branches<br>
+&nbsp;&nbsp;<span class="g">+ 5</span> standup sentences, corrected<br>
+&nbsp;&nbsp;<span class="g">+ 2</span> errors → error_log.md
+  </div>
+</header>
+
+<!-- TRACKER -->
+<section id="tracker" aria-labelledby="t-h">
+  <div class="sec-head">
+    <span class="eyebrow">Щоденний трекер</span>
+    <h2 id="t-h">Сьогоднішнє заняття</h2>
+    <p>Відмічай блоки, коли їх зробиш. День зараховується, якщо зроблено всі чотири блоки або хоча б п'ятихвилинний мінімум. Зелена сітка внизу працює як графік комітів на GitHub.</p>
+  </div>
+  <div class="tracker">
+    <div class="card">
+      <div class="today-head">
+        <h3 id="today-title">Сьогодні</h3>
+        <span class="save-state" id="save-state">збережено на пристрої</span>
+      </div>
+      <p class="note" id="today-focus" style="margin-top:6px"></p>
+      <div class="auth" id="auth">
+        <div id="auth-off" class="msg">Прогрес зберігається лише на цьому пристрої. Щоб синхронізувати з базою, заповни <span class="mono">config.js</span> (див. README).</div>
+        <form id="auth-form" hidden>
+          <span class="msg">Увійди, щоб прогрес зберігався в базі й був однаковий на телефоні та ПК.</span>
+          <div class="row">
+            <input id="auth-email" type="email" autocomplete="email" placeholder="email" required>
+            <input id="auth-pass" type="password" autocomplete="current-password" placeholder="пароль (мін. 6 символів)" minlength="6" required>
+          </div>
+          <div class="row">
+            <button class="primary" id="btn-login" type="submit">Увійти</button>
+            <button class="ghost" id="btn-signup" type="button">Створити акаунт</button>
+          </div>
+          <span class="msg" id="auth-msg"></span>
+        </form>
+        <div id="auth-in" hidden class="row" style="align-items:center;justify-content:space-between">
+          <span class="msg" id="auth-who"></span>
+          <button class="ghost" id="btn-logout" type="button">Вийти</button>
+        </div>
+      </div>
+      <div class="blocks" id="blocks"></div>
+      <button class="min-btn" id="min-btn" type="button" aria-pressed="false">Мінімальний день · 5 хв (Anki або 3 речення Claude)</button>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column;gap:18px">
+      <div class="stats">
+        <div class="stat"><div class="v" id="st-streak">0</div><div class="l">днів поспіль</div></div>
+        <div class="stat"><div class="v" id="st-days">0</div><div class="l">днів практики</div></div>
+        <div class="stat"><div class="v" id="st-hours">0</div><div class="l">годин загалом</div></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;justify-content:space-between;font-size:14px"><span>Звичка стає автоматичною</span><span class="mono" id="st-habit">0 / 66</span></div>
+        <div class="bar"><i id="bar-habit"></i></div>
+        <span class="note">Медіана формування звички — 66 днів. Один пропуск автоматизм не ламає.</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <span class="eyebrow">Останні 16 тижнів</span>
+        <div class="heat-wrap"><div class="heat" id="heat" role="img" aria-label="Календар занять за останні 16 тижнів"></div></div>
+        <div class="legend"><span>менше</span><i style="background:var(--h0)"></i><i style="background:var(--h1)"></i><i style="background:var(--h2)"></i><i style="background:var(--h3)"></i><span>більше</span><span style="margin-left:8px">світле = мінімум, темне = повні 30 хв</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOCK -->
+<section aria-labelledby="c-h">
+  <div class="sec-head">
+    <span class="eyebrow">Структура заняття</span>
+    <h2 id="c-h">Чотири блоки по 30 хвилин</h2>
+    <p>Модель «чотирьох потоків» Пола Нейшна: вхід, власне мовлення, свідома робота з мовою і швидкість мають отримувати приблизно однаковий час. Більше одного блоку зубріння поспіль не дає користі, а без мовлення словник лишається пасивним.</p>
+  </div>
+  <div class="card clock">
+    <svg viewBox="0 0 220 220" role="img" aria-label="Діаграма: 7 хвилин слова, 10 хвилин вхід, 8 хвилин мовлення, 5 хвилин швидкість">
+      <g transform="rotate(-90 110 110)" fill="none" stroke-width="34">
+        <circle cx="110" cy="110" r="80" pathLength="30" stroke="var(--s1)" stroke-dasharray="6.8 23.2" stroke-dashoffset="0"/>
+        <circle cx="110" cy="110" r="80" pathLength="30" stroke="var(--s2)" stroke-dasharray="9.8 20.2" stroke-dashoffset="-7"/>
+        <circle cx="110" cy="110" r="80" pathLength="30" stroke="var(--s3)" stroke-dasharray="7.8 22.2" stroke-dashoffset="-17"/>
+        <circle cx="110" cy="110" r="80" pathLength="30" stroke="var(--s4)" stroke-dasharray="4.8 25.2" stroke-dashoffset="-25"/>
+      </g>
+      <text x="110" y="106" text-anchor="middle" font-family="Unbounded, sans-serif" font-size="30" font-weight="700" fill="var(--ink)">30</text>
+      <text x="110" y="128" text-anchor="middle" font-family="Golos Text, sans-serif" font-size="12" fill="var(--muted)">хвилин</text>
+      <g font-family="JetBrains Mono, monospace" font-size="11" font-weight="600" fill="var(--surface)" text-anchor="middle">
+        <text x="164" y="55">7</text><text x="157" y="179">10</text><text x="34" y="139" fill="var(--hl-ink)">8</text><text x="70" y="45">5</text>
+      </g>
+    </svg>
+    <div class="strands">
+      <div class="strand" style="--c:var(--s1)"><span class="min">0–7</span><div><div class="t">Слова · Anki</div><div class="d">Повторення + 5–7 нових карток у реченнях з твого IT-контексту. Самоперевірка утримує ~80% слів через тиждень, перечитування лише ~35%.</div></div></div>
+      <div class="strand" style="--c:var(--s2)"><span class="min">7–17</span><div><div class="t">Вхід · читаю або слухаю</div><div class="d">Текст чи подкаст, де знайомо ~98% слів: одне нове слово на п'ятдесят. Для дорослих екстенсивне читання дає один з найсильніших ефектів.</div></div></div>
+      <div class="strand" style="--c:var(--s3)"><span class="min">17–25</span><div><div class="t">Мовлення · пишу або говорю</div><div class="d">3–5 речень або голосова рольова гра з Claude, потім виправлення. Спершу пишеш ти, потім виправляє Claude, ніколи навпаки.</div></div></div>
+      <div class="strand" style="--c:var(--s4)"><span class="min">25–30</span><div><div class="t">Швидкість + журнал</div><div class="d">Переслухати знайоме швидше або shadowing. Занести 1–3 помилки в <span class="mono">error_log.md</span>.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- WEEK -->
+<section aria-labelledby="w-h">
+  <div class="sec-head">
+    <span class="eyebrow">Тижневий ритм</span>
+    <h2 id="w-h">Кожен день має свій фокус</h2>
+    <p>Anki щодня займає перші 5–7 хвилин. Решта ~23 хвилини змінюються, щоб не набридало, а за тиждень усі чотири блоки лишаються збалансованими.</p>
+  </div>
+  <div class="week" id="week"></div>
+</section>
+
+<!-- ROADMAP -->
+<section aria-labelledby="r-h">
+  <div class="sec-head">
+    <span class="eyebrow">Дорожня карта</span>
+    <h2 id="r-h">Від A1 до B1 приблизно за два роки</h2>
+    <p>Cambridge оцінює шлях з нуля так: A2 — 180–200 годин, B1 — 350–400, B2 — 500–600. 30 хвилин у 80–90% днів дають близько 165 годин на рік. Діаграма побудована в масштабі годин.</p>
+  </div>
+  <div class="card chart-box">
+    <svg viewBox="0 0 860 210" role="img" aria-label="Шкала годин від 0 до 650: роки занять і рівні CEFR">
+      <!-- scale: x = 40 + h * 1.2 -->
+      <g font-family="JetBrains Mono, monospace" font-size="11" fill="var(--muted)">
+        <line x1="40" y1="150" x2="820" y2="150" stroke="var(--line)" stroke-width="2"/>
+        <g stroke="var(--line)"><line x1="40" y1="150" x2="40" y2="158"/><line x1="160" y1="150" x2="160" y2="158"/><line x1="280" y1="150" x2="280" y2="158"/><line x1="400" y1="150" x2="400" y2="158"/><line x1="520" y1="150" x2="520" y2="158"/><line x1="640" y1="150" x2="640" y2="158"/><line x1="760" y1="150" x2="760" y2="158"/></g>
+        <text x="40" y="174" text-anchor="middle">0</text><text x="160" y="174" text-anchor="middle">100</text><text x="280" y="174" text-anchor="middle">200</text><text x="400" y="174" text-anchor="middle">300</text><text x="520" y="174" text-anchor="middle">400</text><text x="640" y="174" text-anchor="middle">500</text><text x="760" y="174" text-anchor="middle">600</text>
+        <text x="820" y="174" text-anchor="end">годин</text>
+      </g>
+      <!-- level bands -->
+      <rect x="256" y="40" width="24" height="110" fill="var(--s2)" opacity=".28"/>
+      <rect x="460" y="40" width="60" height="110" fill="var(--s1)" opacity=".28"/>
+      <rect x="640" y="40" width="120" height="110" fill="var(--s4)" opacity=".24"/>
+      <g font-family="Unbounded, sans-serif" font-size="18" font-weight="700">
+        <text x="268" y="32" text-anchor="middle" fill="var(--s2)">A2</text>
+        <text x="490" y="32" text-anchor="middle" fill="var(--s1)">B1</text>
+        <text x="700" y="32" text-anchor="middle" fill="var(--s4)">B2</text>
+      </g>
+      <!-- years: 165h each -->
+      <g font-family="Golos Text, sans-serif" font-size="12" fill="var(--ink)">
+        <line x1="238" y1="60" x2="238" y2="150" stroke="var(--ink)" stroke-dasharray="3 4"/>
+        <line x1="436" y1="60" x2="436" y2="150" stroke="var(--ink)" stroke-dasharray="3 4"/>
+        <line x1="634" y1="60" x2="634" y2="150" stroke="var(--ink)" stroke-dasharray="3 4"/>
+        <text x="232" y="74" text-anchor="end">рік 1</text>
+        <text x="430" y="74" text-anchor="end">рік 2</text>
+        <text x="628" y="74" text-anchor="end">рік 3</text>
+      </g>
+      <!-- progress line -->
+      <rect x="40" y="118" width="594" height="10" rx="5" fill="var(--soft)"/>
+      <rect x="40" y="118" width="198" height="10" rx="5" fill="var(--accent)"/>
+      <circle cx="40" cy="123" r="7" fill="var(--hl)" stroke="var(--ink)" stroke-width="1.5"/>
+      <text x="52" y="108" font-family="Golos Text, sans-serif" font-size="12" fill="var(--ink)">ти зараз (A1–A2)</text>
+      <text x="40" y="200" font-family="Golos Text, sans-serif" font-size="12" fill="var(--muted)">Пунктир: 165 годин за рік при 30 хв/день. Години Cambridge рахують навчання з викладачем, тож для самоучки це мінімум.</text>
+    </svg>
+  </div>
+  <div class="stages">
+    <div class="card stage">
+      <span class="when">тиждень 1 → місяць 3</span>
+      <span class="lvl">Звичка</span>
+      <ul><li>EF SET і запис монологу «About me»</li><li>Project у Claude + Anki</li><li>Present Simple, do-питання, артиклі, Past Simple</li><li>+~500 слів Oxford 3000 A1–A2</li></ul>
+      <div class="check">Контроль: <b>звичка автоматична ~2 міс.</b></div>
+    </div>
+    <div class="card stage">
+      <span class="when">місяці 4–8</span>
+      <span class="lvl" style="color:var(--s2)">A2 впевнено</span>
+      <ul><li>will / going to, Present Perfect (3 функції), Continuous, модальні</li><li>CS50 shorts, README з опорою</li><li>shadowing 3–4 рази на тиждень</li><li>~1 000–1 500 слів</li></ul>
+      <div class="check">Контроль: <b>EF SET 31–40</b></div>
+    </div>
+    <div class="card stage">
+      <span class="when">місяці 9–24</span>
+      <span class="lvl" style="color:var(--s1)">B1 · мета</span>
+      <ul><li>пасив, перший умовний, порівняння</li><li>6 Minute English без транскрипту</li><li>документація з Readlang</li><li>2 000–3 000 слів</li></ul>
+      <div class="check">Контроль: <b>EF SET 41–50</b></div>
+    </div>
+    <div class="card stage">
+      <span class="when">роки 2,5–3,5</span>
+      <span class="lvl" style="color:var(--s4)">B2 · бонус</span>
+      <ul><li>Past Perfect, 2-й/3-й умовні, непряма мова</li><li>автентичні tech-подкасти й YouTube</li><li>~5 000 слів</li></ul>
+      <div class="check">Контроль: <b>EF SET 51–60</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- GRAMMAR -->
+<section aria-labelledby="g-h">
+  <div class="sec-head">
+    <span class="eyebrow">Граматика</span>
+    <h2 id="g-h">Дев'ять пунктів замість дванадцяти часів</h2>
+    <p>У розмовній англійській прості форми трапляються приблизно у 17 разів частіше за тривалі. Тому граматика йде чергою: спочатку те, що звучить постійно, а рідкісне відкладено на потім.</p>
+  </div>
+  <div class="two">
+    <div class="card" style="display:flex;flex-direction:column;gap:14px">
+      <h3>Частка дієслівних форм у текстах студентів</h3>
+      <div class="hbars">
+        <div class="hb"><span>Present Simple</span><span class="track"><i style="width:63.7%"></i></span><span class="p">63,7%</span></div>
+        <div class="hb"><span>Past Simple</span><span class="track"><i style="width:25.1%"></i></span><span class="p">25,1%</span></div>
+        <div class="hb"><span>Present Perfect</span><span class="track"><i style="width:4.5%"></i></span><span class="p">4,5%</span></div>
+        <div class="hb"><span>will</span><span class="track"><i style="width:4%"></i></span><span class="p">4,0%</span></div>
+        <div class="hb"><span>Present Cont.</span><span class="track"><i style="width:1.4%"></i></span><span class="p">1,4%</span></div>
+        <div class="hb fade"><span>усі інші разом</span><span class="track"><i style="width:1.3%"></i></span><span class="p">~1,3%</span></div>
+      </div>
+      <p class="note">Корпус MICUSP, 114 899 дієслівних груп. Це академічне письмо: у розмові більше going to і Continuous, але порядок той самий.</p>
+      <div style="border-top:1px solid var(--line);padding-top:12px">
+        <h3 style="margin-bottom:6px">12 дієслів = ~45% розмови</h3>
+        <p class="mono" style="font-size:13px;color:var(--muted)">say · get · go · know · think · see · make · come · take · want · give · mean</p>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="margin-bottom:6px">Черга вивчення</h3>
+      <ol class="queue">
+        <li><span class="q">1</span><div><div class="w">Present Simple + do/does</div><div class="e">Does it support streaming?</div></div></li>
+        <li><span class="q">2</span><div><div class="w">Past Simple + 30–50 неправильних дієслів</div><div class="e">Yesterday I fixed the bug.</div></div></li>
+        <li><span class="q">3</span><div><div class="w">will / going to</div><div class="e">I'll check it. I'm going to refactor this.</div></div></li>
+        <li><span class="q">4</span><div><div class="w">Present Perfect: результат, already/yet, for/since</div><div class="e">I've pushed the fix. Have you deployed it yet?</div></div></li>
+        <li><span class="q">5</span><div><div class="w">Present Continuous</div><div class="e">The build is failing.</div></div></li>
+        <li><span class="q">6</span><div><div class="w">can/could, should, need to, might</div><div class="e">Could you review my PR?</div></div></li>
+        <li><span class="q">7</span><div><div class="w">Наказовий спосіб + простий пасив</div><div class="e">The bug was introduced in v2.3.</div></div></li>
+        <li><span class="q">8</span><div><div class="w">Перший умовний</div><div class="e">If the test fails, the pipeline will stop.</div></div></li>
+        <li><span class="q">9</span><div><div class="w">Артиклі, there is/are, незлічувані</div><div class="e">We need more information.</div></div></li>
+      </ol>
+      <p class="later" style="margin-top:10px">Після B1: Past Perfect, усі perfect continuous, Future Perfect, 2-й і 3-й умовні.</p>
+    </div>
+  </div>
+  <div class="card" style="display:flex;flex-direction:column;gap:8px">
+    <h3>Шаблон стендапу на трьох формах</h3>
+    <p class="mono" style="font-size:14px;max-width:none">Yesterday I <mark>finished</mark> the login form. Today I<mark>'m going to</mark> write tests. I<mark>'m blocked</mark> by the API — I<mark>'ve</mark> already <mark>asked</mark> Anna.</p>
+    <p class="note">Підказка для українського мозку: Present Continuous — «недоконаний процес зараз», Present Perfect — «зробив, і результат видно зараз».</p>
+  </div>
+</section>
+
+<!-- PITFALLS -->
+<section aria-labelledby="p-h">
+  <div class="sec-head">
+    <span class="eyebrow">Пастки для україномовних</span>
+    <h2 id="p-h">Шість помилок, які видають дослівний переклад</h2>
+    <p>Найстійкіша — пропущений артикль: у великому корпусі учнівських текстів 81% помилок з артиклями були саме пропусками. Правило одне: злічуваний іменник в однині ніколи не стоїть «голим».</p>
+  </div>
+  <div class="errs">
+    <div class="card err"><span class="lbl">Пропущений артикль</span><span class="bad">I am good developer</span><span class="ok">I am a good developer</span></div>
+    <div class="card err"><span class="lbl">Питання без do</span><span class="bad">Where you live?</span><span class="ok">Where do you live?</span></div>
+    <div class="card err"><span class="lbl">Загублене -s</span><span class="bad">He work on backend</span><span class="ok">He works on the backend</span></div>
+    <div class="card err"><span class="lbl">will після if</span><span class="bad">If I will see him…</span><span class="ok">If I see him…</span></div>
+    <div class="card err"><span class="lbl">Стан до сьогодні</span><span class="bad">I live here since 2020</span><span class="ok">I've lived here since 2020</span></div>
+    <div class="card err"><span class="lbl">Кальки</span><span class="bad">I am agree · I want learn</span><span class="ok">I agree · I want to learn</span></div>
+  </div>
+  <div class="card" style="display:flex;flex-direction:column;gap:12px">
+    <h3>Хибні друзі перекладача в IT</h3>
+    <div class="ff">
+      <span class="ffp">актуальний <s>actual</s> → <b>current, latest</b></span>
+      <span class="ffp">дата <s>data</s> → <b>date</b> (data = дані)</span>
+      <span class="ffp">реалізувати фічу <s>realize</s> → <b>implement</b></span>
+      <span class="ffp">акуратний <s>accurate</s> → <b>neat, careful</b></span>
+      <span class="ffp">інтелігентний <s>intelligent</s> → <b>cultured</b></span>
+      <span class="ffp">магазин <s>magazine</s> → <b>shop, store</b></span>
+      <span class="ffp">eventually <s>можливо</s> → <b>зрештою</b></span>
+      <span class="ffp">рецепт (чек) <s>recipe</s> → <b>receipt</b></span>
+    </div>
+  </div>
+  <div class="sounds">
+    <div class="card sound"><span class="pr">пріоритет 1</span><div class="ipa">ɪ / iː</div><div class="ex">ship – sheep, live – leave. Довгі й короткі голосні змінюють слово.</div></div>
+    <div class="card sound"><span class="pr">пріоритет 1</span><div class="ipa">deVELopment</div><div class="ex">Наголос в інтернаціоналізмах. Неправильний наголос найчастіше заважає зрозуміти.</div></div>
+    <div class="card sound"><span class="pr">пріоритет 2</span><div class="ipa">æ / e</div><div class="ex">bad – bed, man – men. Без /æ/ слова зливаються.</div></div>
+    <div class="card sound"><span class="pr">пріоритет 3</span><div class="ipa">θ ð w</div><div class="ex">think, this, when. Помітні, але порозумінню заважають рідко.</div></div>
+  </div>
+  <p class="note">Перевага україномовних: на відміну від російської, українська не оглушує кінцеві дзвінкі, тож «dad → dat» тебе майже не стосується. І більшість IT-слів (server, release, commit) ти вже впізнаєш.</p>
+</section>
+
+<!-- CLAUDE -->
+<section aria-labelledby="ai-h">
+  <div class="sec-head">
+    <span class="eyebrow">Як працюємо з Claude</span>
+    <h2 id="ai-h">Вчитель — це система, а не чат</h2>
+    <p>Claude добре розмовляє й виправляє, але має три вади: хвалить без причини (~18% відповідей у дослідженні), пропускає частину помилок, особливо з артиклями, і забуває інструкції в довгих чатах. Тому пам'ять школи живе у твоїх файлах, а кожне заняття проходить як CI-пайплайн.</p>
+  </div>
+  <div class="pipe" aria-label="Цикл заняття">
+    <div class="stg"><span class="s">step 1</span><span class="w">write</span><span class="who">ти пишеш або говориш</span></div>
+    <div class="stg"><span class="s">step 2</span><span class="w">review</span><span class="who">Claude виправляє за категоріями</span></div>
+    <div class="stg"><span class="s">step 3</span><span class="w">log</span><span class="who">помилки → error_log.md</span></div>
+    <div class="stg"><span class="s">step 4</span><span class="w">anki</span><span class="who">≤7 карток з твоїх речень</span></div>
+    <div class="stg"><span class="s">step 5</span><span class="w">warm-up</span><span class="who">завтра розминка на топ-3 помилках</span></div>
+  </div>
+  <div class="files">
+    <div class="card file"><span class="fn">curriculum.md</span><p class="note">Поточний етап і граматична черга.</p><pre>stage: 1 (habit)
+grammar: #1 Present Simple + do
+next: #2 Past Simple</pre></div>
+    <div class="card file"><span class="fn">error_log.md</span><p class="note">Журнал помилок з лічильником повторів.</p><pre>date | error | fix | type | ×
+11-07 | Where you live | Where do you live | do-q | 3</pre></div>
+    <div class="card file"><span class="fn">vocab.md</span><p class="note">Слова тижня у твоїх реченнях.</p><pre>deploy — I deployed it yesterday.
+blocker — Do you have any blockers?</pre></div>
+  </div>
+  <div class="two">
+    <div class="card"><h3 style="margin-bottom:8px">Голосом</h3><p style="font-size:15px">Голосовий режим Claude у beta на всіх планах. Обери English у налаштуваннях: української там немає. Після розмови текстом надішли 3–5 своїх фраз на виправлення, бо формат «голос + текст» дає найбільший ефект.</p></div>
+    <div class="card"><h3 style="margin-bottom:8px">Вимова</h3><p style="font-size:15px">Жоден чат-бот не чує окремих звуків: він розпізнає текст і «тихо» виправляє. Для вимови додай безкоштовний план ELSA Speak, а слова перевіряй на YouGlish у реальних відео.</p></div>
+  </div>
+</section>
+
+<!-- PROMPTS -->
+<section aria-labelledby="pr-h">
+  <div class="sec-head">
+    <span class="eyebrow">Бібліотека промптів</span>
+    <h2 id="pr-h">Десять промптів для щоденної роботи</h2>
+    <p>P1 вставляється один раз в інструкцію Project. Решту копіюєш у чат за розкладом. Промпт перевірки з категоріями й прикладом знаходив 55% помилок проти 10% у загального «check my text».</p>
+  </div>
+  <div class="prompts" id="prompts"></div>
+</section>
+
+<!-- RESOURCES -->
+<section aria-labelledby="res-h">
+  <div class="sec-head">
+    <span class="eyebrow">Ресурси</span>
+    <h2 id="res-h">Безкоштовне, градуйоване, про IT</h2>
+    <p>Усе нижче працює з України без оплати. Поза 30 хвилинами переведи інтерфейс телефону та IDE на англійську і пиши промпти до LLM англійською: це безкоштовний додатковий контакт з мовою.</p>
+  </div>
+  <div class="tbl-box">
+    <table>
+      <thead><tr><th>Ресурс</th><th>Для чого</th><th>Рівень</th><th>Як з Claude</th></tr></thead>
+      <tbody>
+        <tr><td><a href="https://breakingnewsenglish.com/news_levels.html" target="_blank" rel="noopener">Breaking News English</a></td><td>Новини на рівнях 0–6, аудіо на 5 швидкостях</td><td class="lv">A2→C1</td><td>Перекажи tech-новину → P5</td></tr>
+        <tr><td><a href="https://www.bbc.co.uk/learningenglish/english/features/6-minute-english" target="_blank" rel="noopener">BBC 6 Minute English</a></td><td>Подкаст з транскриптом, є tech-випуски</td><td class="lv">A2+/B1</td><td>3 питання від Claude після слухання</td></tr>
+        <tr><td><a href="https://www.newsinlevels.com" target="_blank" rel="noopener">News in Levels</a></td><td>Одна новина на 3 рівнях</td><td class="lv">A2–B1</td><td>Блок «швидкість»: рівень 1, потім 3</td></tr>
+        <tr><td><a href="https://learnenglish.britishcouncil.org" target="_blank" rel="noopener">British Council LearnEnglish</a></td><td>Слухання, Podcasts for professionals</td><td class="lv">A1–C1</td><td>Друга думка щодо рівня</td></tr>
+        <tr><td><a href="https://cs50.harvard.edu/x/" target="_blank" rel="noopener">CS50 Harvard</a></td><td>Чіткі лекції з CS, короткі відео</td><td class="lv">B1</td><td>Конспект англійською → P5</td></tr>
+        <tr><td><a href="https://syntax.fm" target="_blank" rel="noopener">Syntax.fm</a></td><td>Веб-подкаст з транскриптами</td><td class="lv">B1+</td><td>Уривок транскрипту → P9</td></tr>
+        <tr><td><a href="https://readlang.com" target="_blank" rel="noopener">Readlang</a></td><td>Переклад слова кліком у будь-якому тексті</td><td class="lv">будь-який</td><td>Документація, статті</td></tr>
+        <tr><td><a href="https://www.languagereactor.com" target="_blank" rel="noopener">Language Reactor</a></td><td>Подвійні субтитри на YouTube</td><td class="lv">будь-який</td><td>Tech-відео з англ.+укр. субтитрами</td></tr>
+        <tr><td><a href="https://www.oxfordlearnersdictionaries.com/about/wordlists/oxford3000-5000" target="_blank" rel="noopener">Oxford 3000</a></td><td>3000 базових слів з позначкою рівня</td><td class="lv">A1–B2</td><td>Слова A1–A2 → картки P7</td></tr>
+        <tr><td><a href="https://youglish.com" target="_blank" rel="noopener">YouGlish</a></td><td>Як слово звучить у реальних відео</td><td class="lv">будь-який</td><td>Перевір наголос перед shadowing</td></tr>
+        <tr><td>ELSA Speak</td><td>Оцінка вимови по звуках (безкоштовний план)</td><td class="lv">будь-який</td><td>Те, чого Claude не вміє</td></tr>
+        <tr><td><a href="https://www.efset.org/ef-set-50/" target="_blank" rel="noopener">EF SET 50</a></td><td>Тест читання і слухання, сертифікат</td><td class="lv">шкала 0–100</td><td>Контроль раз на 3–4 місяці</td></tr>
+        <tr><td><a href="https://osvita.diia.gov.ua" target="_blank" rel="noopener">Дія.Освіта · Future Perfect</a></td><td>Державна програма англійської, пропозиції партнерів</td><td class="lv">різний</td><td>Перевір, що доступно зараз</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- HABIT -->
+<section aria-labelledby="h-h">
+  <div class="sec-head">
+    <span class="eyebrow">Стабільність</span>
+    <h2 id="h-h">Чотири правила, щоб не кинути</h2>
+    <p>Самостійна школа зазвичай гине не через поганий метод, а через те, що зникає сама практика. Ці правила тримають систему, коли мотивації немає.</p>
+  </div>
+  <div class="rules">
+    <div class="card rule"><div class="big">5 хв</div><h3 style="margin-top:10px">Мінімум рятує серію</h3><p style="font-size:15px;margin-top:6px">Мета дня — 30 хвилин, але серію зберігає мінімум. У Duolingo таке розділення підняло кількість учнів із серією понад 7 днів більш ніж на 40%.</p></div>
+    <div class="card rule"><div class="big">×2</div><h3 style="margin-top:10px">Не пропускати двічі поспіль</h3><p style="font-size:15px;margin-top:6px">Один пропуск звичці не шкодить. Два поспіль уже стають новою звичкою не займатися.</p></div>
+    <div class="card rule"><div class="big">якщо → то</div><h3 style="margin-top:10px">Прив'язка до рутини</h3><div class="ifthen">після того як наллю каву → відкриваю Anki<br>якщо о 21:30 не займався → роблю 5 хв</div></div>
+    <div class="card rule"><div class="big">≤7</div><h3 style="margin-top:10px">Стеля нових карток</h3><p style="font-size:15px;margin-top:6px">Не надолужуй пропущене подвійною порцією. Нудно — міняй формат (новий подкаст, нова рольова гра), а не кидай.</p></div>
+  </div>
+</section>
+
+<!-- START -->
+<section aria-labelledby="s-h">
+  <div class="sec-head">
+    <span class="eyebrow">Тиждень 1</span>
+    <h2 id="s-h">З чого почати сьогодні</h2>
+  </div>
+  <ol class="start">
+    <li><div><b>Пройди EF SET 50</b> (50 хв, безкоштовно). Це твоя точка відліку: A2 = 31–40 балів.</div></li>
+    <li><div><b>Запиши 2-хвилинний монолог</b> «About me and my studies» на телефон. Через 3 місяці запишеш той самий і порівняєш.</div></li>
+    <li><div><b>Створи Project «English School» у Claude</b>, встав P1 в інструкцію, додай три файли: curriculum, error_log, vocab.</div></li>
+    <li><div><b>Встанови Anki</b> (на ПК безкоштовно, на Android — AnkiDroid). У налаштуваннях: планувальник FSRS, ліміт нових карток — 7.</div></li>
+    <li><div><b>Напиши мені в цьому чаті</b> свій бал EF SET, і я налаштую curriculum.md під твій реальний рівень.</div></li>
+  </ol>
+</section>
+
+<footer>
+  <span>Особиста школа англійської · PWA · дані в Supabase.</span>
+  <span>Цифри: Nation (four strands, лексичне покриття), Cambridge (guided learning hours), Jeon &amp; Day 2016, Karpicke &amp; Roediger 2008, Biber 2005, Lally 2009, Duolingo, Luo et al. 2026.</span>
+</footer>
+</div>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+(function(){
+  const STRANDS=[
+    {k:0,c:'var(--s1)',m:7,t:'Слова · Anki',d:'Повторення + 5–7 нових карток'},
+    {k:1,c:'var(--s2)',m:10,t:'Вхід',d:''},
+    {k:2,c:'var(--s3)',m:8,t:'Мовлення з Claude',d:''},
+    {k:3,c:'var(--s4)',m:5,t:'Швидкість + журнал помилок',d:'Shadowing або перечитати швидше; 1–3 помилки в лог'}
+  ];
+  // index by JS getDay(): 0 = Sun
+  const WEEK=[
+    {n:'Нд',f:'Легкий день',x:'Подкаст чи відео для задоволення, лише мінімум в Anki',c:'var(--muted)',inp:'Подкаст або відео для задоволення',out:'Лише якщо хочеться'},
+    {n:'Пн',f:'Стендап',x:'Рольова гра «daily standup» голосом, виправлення (P4)',c:'var(--s3)',inp:'Короткий текст від Claude (P3)',out:'Стендап голосом (P4)'},
+    {n:'Вт',f:'Довге читання',x:'IT-текст від Claude (P3) або Breaking News English',c:'var(--s2)',inp:'Довгий текст: P3 або Breaking News English',out:'Переказ 3–5 речень (P5)'},
+    {n:'Ср',f:'Shadowing',x:'1–2 хв кліпу з транскриптом + пари ship/sheep',c:'var(--s4)',inp:'Кліп з транскриптом (6 Minute English)',out:'Shadowing уголос'},
+    {n:'Чт',f:'Письмо з роботи',x:'README, коміт, промпт англійською → P5 / P10',c:'var(--s3)',inp:'Абзац документації (P9)',out:'README або коміт (P5, P10)'},
+    {n:'Пт',f:'Співбесіда / code review',x:'Рольова гра на варіантах P4',c:'var(--s3)',inp:'Короткий текст від Claude (P3)',out:'Співбесіда або code review (P4)'},
+    {n:'Сб',f:'Тижнева перевірка',x:'P8, злиття журналу, новий чат у Claude',c:'var(--s1)',inp:'Тест P8',out:'Письмо 60 слів і монолог (P8)'}
+  ];
+
+  const pad=n=>String(n).padStart(2,'0');
+  const key=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+  const today=new Date(); today.setHours(12,0,0,0);
+  const TK=key(today);
+  const LS='english-school-v1';
+
+  let state={days:{}};
+  try{const raw=localStorage.getItem(LS); if(raw){const p=JSON.parse(raw); if(p&&p.days) state=p;}}catch(e){}
+
+  const saveEl=document.getElementById('save-state');
+  const saveLocal=()=>{try{localStorage.setItem(LS,JSON.stringify(state));}catch(e){}};
+  if(!state.dirty) state.dirty={};
+
+  function dayRec(k){return state.days[k]||{b:[false,false,false,false],min:false};}
+  function level(r){ if(!r) return 0; const n=r.b.filter(Boolean).length; if(n===4) return 3; if(n>0) return 2; if(r.min) return 1; return 0; }
+  function counted(r){return level(r)>0;}
+  function minutes(r){ if(!r) return 0; const s=r.b.reduce((a,v,i)=>a+(v?STRANDS[i].m:0),0); return Math.max(s, r.min?5:0); }
+
+  // ---- Supabase sync ----
+  const cfg=window.SCHOOL_CONFIG||{};
+  let sb=null, session=null, pushing=false;
+
+  function persist(k){ if(k) state.dirty[k]=1; saveLocal(); pushDirty(); }
+
+  async function pushDirty(){
+    if(!sb||!session||pushing||!navigator.onLine) { if(sb&&session&&!navigator.onLine) saveEl.textContent='офлайн · синхронізую пізніше'; return; }
+    const keys=Object.keys(state.dirty); if(!keys.length) return;
+    pushing=true; saveEl.textContent='зберігаю…';
+    const rows=keys.map(k=>({user_id:session.user.id,day:k,blocks:dayRec(k).b.map(Boolean),min:!!dayRec(k).min,updated_at:new Date().toISOString()}));
+    const {error}=await sb.from('progress').upsert(rows);
+    pushing=false;
+    if(error){ saveEl.textContent='помилка збереження в базі'; console.error(error); return; }
+    keys.forEach(k=>{ delete state.dirty[k]; }); saveLocal();
+    saveEl.textContent='збережено в базі';
+    if(Object.keys(state.dirty).length) pushDirty();
+  }
+
+  async function pullRemote(){
+    if(!sb||!session) return;
+    saveEl.textContent='завантажую…';
+    const {data,error}=await sb.from('progress').select('day,blocks,min');
+    if(error){ saveEl.textContent='не вдалося прочитати базу'; console.error(error); return; }
+    const remote={};
+    (data||[]).forEach(r=>{ remote[r.day]={b:[0,1,2,3].map(i=>!!(r.blocks&&r.blocks[i])),min:!!r.min}; });
+    Object.entries(remote).forEach(([k,v])=>{ if(!state.dirty[k]) state.days[k]=v; });
+    Object.keys(state.days).forEach(k=>{ if(!remote[k]&&counted(state.days[k])) state.dirty[k]=1; });
+    saveLocal(); render(); saveEl.textContent='збережено в базі'; pushDirty();
+  }
+
+  const $=id=>document.getElementById(id);
+  function authUI(){
+    $('auth-off').hidden=!!sb;
+    $('auth-form').hidden=!sb||!!session;
+    $('auth-in').hidden=!session;
+    if(session) $('auth-who').textContent='Увійшов: '+(session.user.email||'');
+  }
+  async function initSupabase(){
+    if(!cfg.SUPABASE_URL||!cfg.SUPABASE_ANON_KEY||!window.supabase){ authUI(); return; }
+    sb=window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY,{auth:{persistSession:true,autoRefreshToken:true}});
+    const {data}=await sb.auth.getSession(); session=data.session; authUI();
+    sb.auth.onAuthStateChange((ev,s)=>{ const was=!!session; session=s; authUI(); if(s&&!was) pullRemote(); if(!s) saveEl.textContent='збережено на пристрої'; });
+    if(session) pullRemote();
+  }
+  const msg=(t,err)=>{const m=$('auth-msg'); m.textContent=t; m.classList.toggle('err',!!err);};
+  $('auth-form').addEventListener('submit',async ev=>{
+    ev.preventDefault(); if(!sb) return; msg('Входжу…');
+    const {error}=await sb.auth.signInWithPassword({email:$('auth-email').value.trim(),password:$('auth-pass').value});
+    if(error) msg(error.message==='Invalid login credentials'?'Невірний email або пароль.':error.message,true); else msg('');
+  });
+  $('btn-signup').addEventListener('click',async()=>{
+    if(!sb) return; const email=$('auth-email').value.trim(), password=$('auth-pass').value;
+    if(!email||password.length<6){ msg('Введи email і пароль від 6 символів.',true); return; }
+    msg('Створюю акаунт…');
+    const {data,error}=await sb.auth.signUp({email,password});
+    if(error) msg(error.message,true);
+    else if(!data.session) msg('Акаунт створено. Підтверди email за посиланням з листа, потім натисни «Увійти».');
+    else msg('');
+  });
+  $('btn-logout').addEventListener('click',async()=>{ if(sb) await sb.auth.signOut(); });
+  window.addEventListener('online',pushDirty);
+  window.addEventListener('offline',()=>{ if(session) saveEl.textContent='офлайн · синхронізую пізніше'; });
+
+  function setDay(r){ state.days[TK]=r; persist(TK); render(); }
+
+  const blocksEl=document.getElementById('blocks');
+  const minBtn=document.getElementById('min-btn');
+  const wd=WEEK[today.getDay()];
+  document.getElementById('today-title').textContent='Сьогодні · '+wd.n+', '+today.toLocaleDateString('uk-UA',{day:'numeric',month:'long'});
+  document.getElementById('today-focus').textContent='Фокус дня: '+wd.f+'. '+wd.x+'.';
+  const descs=[STRANDS[0].d, wd.inp, wd.out, STRANDS[3].d];
+
+  STRANDS.forEach((s,i)=>{
+    const b=document.createElement('button');
+    b.type='button'; b.className='block'; b.id='blk-'+i; b.style.setProperty('--c',s.c);
+    b.innerHTML='<span class="box"></span><span><span class="t"></span><br><span class="d"></span></span><span class="m">'+s.m+' хв</span>';
+    b.querySelector('.t').textContent=s.t; b.querySelector('.d').textContent=descs[i];
+    b.addEventListener('click',()=>{const r=JSON.parse(JSON.stringify(dayRec(TK))); r.b[i]=!r.b[i]; setDay(r);});
+    blocksEl.appendChild(b);
+  });
+  minBtn.addEventListener('click',()=>{const r=JSON.parse(JSON.stringify(dayRec(TK))); r.min=!r.min; setDay(r);});
+
+  // week cards
+  const weekEl=document.getElementById('week');
+  [1,2,3,4,5,6,0].forEach(i=>{
+    const w=WEEK[i]; const el=document.createElement('div');
+    el.className='day'+(i===today.getDay()?' is-today':''); el.style.setProperty('--c',w.c);
+    el.innerHTML='<span class="n"><span></span><span class="tag"></span></span><span class="f"></span><span class="x"></span>';
+    el.querySelector('.n span').textContent=w.n+(i===today.getDay()?' · сьогодні':'');
+    el.querySelector('.f').textContent=w.f; el.querySelector('.x').textContent=w.x;
+    weekEl.appendChild(el);
+  });
+
+  const heat=document.getElementById('heat');
+  function render(){
+    const r=dayRec(TK);
+    STRANDS.forEach((s,i)=>document.getElementById('blk-'+i).setAttribute('aria-pressed',String(!!r.b[i])));
+    minBtn.setAttribute('aria-pressed',String(!!r.min));
+    // stats
+    let streak=0; const d=new Date(today);
+    if(!counted(state.days[TK])) d.setDate(d.getDate()-1);
+    while(counted(state.days[key(d)])){streak++; d.setDate(d.getDate()-1);}
+    const vals=Object.values(state.days);
+    const days=vals.filter(counted).length;
+    const mins=vals.reduce((a,v)=>a+minutes(v),0);
+    document.getElementById('st-streak').textContent=streak;
+    document.getElementById('st-days').textContent=days;
+    document.getElementById('st-hours').textContent=(mins/60).toFixed(1).replace('.',',');
+    document.getElementById('st-habit').textContent=Math.min(days,66)+' / 66';
+    document.getElementById('bar-habit').style.width=Math.min(100,days/66*100)+'%';
+    // heatmap: 16 weeks ending this week (Mon-first rows)
+    heat.innerHTML='';
+    const end=new Date(today); const dow=(end.getDay()+6)%7; end.setDate(end.getDate()+(6-dow));
+    const start=new Date(end); start.setDate(start.getDate()-16*7+1);
+    for(let x=new Date(start); x<=end; x.setDate(x.getDate()+1)){
+      const i=document.createElement('i'); const k=key(x);
+      if(x>today){i.style.visibility='hidden';}
+      i.dataset.l=String(level(state.days[k])); if(k===TK) i.className='today';
+      i.title=x.toLocaleDateString('uk-UA')+' · '+minutes(state.days[k])+' хв';
+      heat.appendChild(i);
+    }
+  }
+  render();
+
+  initSupabase();
+
+  // prompts
+  const P=[
+    ['P1','Інструкція проєкту: роль учителя','один раз',`You are my personal English tutor. About me: native Ukrainian speaker (I also know Russian),
+English level about A2 (CEFR), I study IT and AI. My goal is practical communication, not perfect grammar.
+Rules:
+1. Use simple A2–B1 English and short sentences. If I write in Ukrainian, help me say it in English.
+2. After each of my messages: first reply naturally (max 3 sentences), then write "Corrections:"
+   with max 3 most important errors: "my phrase" → "correct phrase" → why (one short line, in Ukrainian).
+3. Always check: articles (a/an/the), do/does/did in questions, 3rd person -s, prepositions,
+   "if/when + will", for/since + Present Perfect, word-for-word translation from Ukrainian, false friends.
+4. Do not praise me unless I fix an error from my error log. Never write a text for me before I try myself.
+5. End each turn with one question to keep me talking.
+6. Grammar scope: Present Simple, Past Simple, will/going to, Present Perfect (results, already/yet,
+   for/since), Present Continuous, modals, first conditional. Don't teach other tenses unless I ask.
+Use the files curriculum.md, error_log.md and vocab.md as my current plan.`],
+    ['P2','Старт заняття з розминкою на помилках','щодня',`Day [N]. Start today's session: 1) a 2-minute warm-up quiz on the top 3 errors in my error_log.md,
+one question at a time; 2) then today's task: [standup role-play / reading / writing].`],
+    ['P3','Градуйований IT-текст','Пн, Вт, Пт',`Write a 150-word text at CEFR A2 about [how Git branches work / what an LLM token is].
+Use max 5 words above A2 and put them in bold. Then give 5 comprehension questions
+(true/false + open). Wait for my answers before showing the key. After that, give a glossary
+of the bold words: simple English definition + Ukrainian translation.`],
+    ['P4','Рольова гра: стендап, співбесіда, code review','Пн, Пт',`Role-play: you are my team lead in a daily standup; I'm a junior developer. Ask me what I did
+yesterday, what I'll do today, and if I have blockers. Max 2 short sentences per turn, speak slowly.
+Don't correct me during the role-play. When I say "stop", give me: (a) 5 of my sentences corrected,
+(b) 5 useful standup phrases at A2–B1, (c) a score 1–5 for fluency, accuracy and vocabulary
+based on CEFR descriptors. No flattery.`],
+    ['P5','Перевірка письма за категоріями','Вт, Чт',`Check my text for these error types: articles/determiners, prepositions, verb tense/form,
+3rd person -s, word order, word choice/collocation, direct translation from Ukrainian,
+spelling/punctuation.
+Example: "I work here since 2023" → verb tense → "I have worked here since 2023."
+Output: a table (original | corrected | error type | short rule in Ukrainian), then the full corrected
+text, then my top 3 recurring patterns. Fix errors only; keep my style.
+Text: """[your text]"""`],
+    ['P6','Сократична граматика','коли плутаєш правило',`I confuse Present Perfect and Past Simple. Don't explain the rule first. Give me 6 sentences
+to complete, one at a time. If I'm wrong, ask me a guiding question; explain only after that.
+At the end, ask me to state the rule in my own words and correct my statement.`],
+    ['P7','Кінець заняття: журнал + картки Anki','щодня',`From today's session: 1) add my errors to the log in the format
+date | error | correction | category | times seen; merge with the log below and increase counts
+for repeats; suggest 3 micro-drills for the top 3 categories.
+2) Make max 7 Anki cards as TSV: Front (Ukrainian prompt or a cloze sentence {{c1::...}}
+from my IT context) <tab> Back (full English sentence + IPA for hard words).
+Log: """[paste error_log]"""`],
+    ['P8','Тижнева перевірка','Сб',`Weekly check, 10 minutes: 5 grammar items and 5 vocabulary items from my log, one 60-word
+writing task, one speaking prompt. Score with CEFR A2/B1 descriptors, compare with last week's
+results (below) and name one focus for next week. Be strict: unwarranted praise does not help me.
+Last week: """[...]"""`],
+    ['P9','Опора для документації чи транскрипту','Чт',`Here is a paragraph from [Anthropic docs / a README / a talk transcript]: """[...]"""
+1) Give me a simplified A2 version. 2) List 5 key words with Ukrainian translation.
+3) Ask me 3 questions about it. Then I will read the original again.`],
+    ['P10','Коміт-повідомлення англійською','під час кодингу',`Correct my commit message (Conventional Commits style) and explain each change in one line
+in Ukrainian: "[your message]"`]
+  ];
+  const pe=document.getElementById('prompts');
+  P.forEach(([id,ti,wh,txt],idx)=>{
+    const d=document.createElement('details'); d.className='pr'; if(idx===0) d.open=true;
+    d.innerHTML='<summary><span class="id"></span><span class="ti"></span><span class="wh"></span></summary><div class="pbody"><pre></pre><button type="button" class="copy">Копіювати</button></div>';
+    d.querySelector('.id').textContent=id; d.querySelector('.ti').textContent=ti; d.querySelector('.wh').textContent=wh;
+    const pre=d.querySelector('pre'); pre.textContent=txt;
+    const btn=d.querySelector('.copy'); btn.id='copy-'+id;
+    btn.addEventListener('click',()=>{
+      const ok=()=>{btn.textContent='Скопійовано'; btn.classList.add('done'); setTimeout(()=>{btn.textContent='Копіювати';btn.classList.remove('done');},1800);};
+      const fallback=()=>{const s=window.getSelection(),rg=document.createRange(); rg.selectNodeContents(pre); s.removeAllRanges(); s.addRange(rg); btn.textContent='Виділено, натисни Ctrl+C';};
+      try{ navigator.clipboard.writeText(txt).then(ok,fallback); }catch(e){ fallback(); }
+    });
+    pe.appendChild(d);
+  });
+})();
+</script>
+<script>
+if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{})); }
+</script>
+</body>
+</html>
